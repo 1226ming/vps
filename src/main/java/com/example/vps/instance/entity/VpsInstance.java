@@ -16,8 +16,11 @@ public class VpsInstance extends BaseEntity {
     private Long orderId;
     private Long planId;
     private Long nodeId;
+    private Long serverId;
     private String name;
     private String ipAddress;
+    private Integer vpnPort;
+    private String vpnProtocol;
     private String osName;
     private InstanceStatus status;
     private BigDecimal trafficUsedGb;

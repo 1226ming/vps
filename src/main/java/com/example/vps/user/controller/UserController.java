@@ -1,6 +1,10 @@
 package com.example.vps.user.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.vps.auth.dto.LoginRequest;
+import com.example.vps.auth.dto.RegisterRequest;
+import com.example.vps.auth.service.AuthService;
+import com.example.vps.auth.vo.LoginVO;
 import com.example.vps.common.result.Result;
 import com.example.vps.user.dto.UpdatePasswordRequest;
 import com.example.vps.user.dto.UpdateProfileRequest;
@@ -9,21 +13,18 @@ import com.example.vps.user.entity.SysUser;
 import com.example.vps.user.service.UserService;
 import com.example.vps.user.vo.UserProfileVO;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final AuthService authService;
+
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @GetMapping("/users/profile")
@@ -52,5 +53,15 @@ public class UserController {
     public Result<Void> updateStatus(@PathVariable Long id, @Valid @RequestBody UpdateUserStatusRequest request) {
         userService.updateStatus(id, request);
         return Result.success();
+    }
+
+    @PostMapping("/login")
+    public Result<LoginVO> login(@Valid @RequestBody LoginRequest request) {
+        return Result.success(authService.login(request));
+    }
+
+    @PostMapping("/register")
+    public Result<LoginVO> register(@Valid @RequestBody RegisterRequest request) {
+        return Result.success(authService.register(request));
     }
 }

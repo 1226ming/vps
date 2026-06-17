@@ -3,12 +3,15 @@ package com.example.vps.instance.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.vps.common.enums.InstanceStatus;
 import com.example.vps.common.result.Result;
+import com.example.vps.instance.dto.CreateVpnInstanceRequest;
 import com.example.vps.instance.entity.VpsInstance;
 import com.example.vps.instance.service.InstanceService;
+import jakarta.validation.Valid;
 import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,5 +71,10 @@ public class InstanceController {
     public Result<IPage<VpsInstance>> adminInstances(@RequestParam(defaultValue = "1") long page,
                                                      @RequestParam(defaultValue = "20") long size) {
         return Result.success(instanceService.adminInstances(page, size));
+    }
+
+    @PostMapping("/admin/instances")
+    public Result<VpsInstance> adminCreateVpn(@Valid @RequestBody CreateVpnInstanceRequest request) {
+        return Result.success(instanceService.adminCreateVpn(request));
     }
 }

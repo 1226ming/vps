@@ -1,6 +1,6 @@
 package com.example.vps.ticket.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.vps.common.enums.TicketStatus;
@@ -40,9 +40,9 @@ public class TicketService {
     }
 
     public IPage<VpsTicket> myTickets(long page, long size) {
-        return ticketMapper.selectPage(Page.of(page, size), new LambdaQueryWrapper<VpsTicket>()
-                .eq(VpsTicket::getUserId, CurrentUser.id())
-                .orderByDesc(VpsTicket::getId));
+        return ticketMapper.selectPage(Page.of(page, size), new QueryWrapper<VpsTicket>()
+                .eq("user_id", CurrentUser.id())
+                .orderByDesc("id"));
     }
 
     public Map<String, Object> detail(Long id) {
@@ -105,9 +105,9 @@ public class TicketService {
     }
 
     private java.util.List<VpsTicketMessage> messages(Long ticketId) {
-        return messageMapper.selectList(new LambdaQueryWrapper<VpsTicketMessage>()
-                .eq(VpsTicketMessage::getTicketId, ticketId)
-                .orderByAsc(VpsTicketMessage::getId));
+        return messageMapper.selectList(new QueryWrapper<VpsTicketMessage>()
+                .eq("ticket_id", ticketId)
+                .orderByAsc("id"));
     }
 
     private void addMessage(Long ticketId, Long senderId, UserRole senderRole, String content) {

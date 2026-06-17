@@ -1,6 +1,6 @@
 package com.example.vps.traffic.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.vps.common.exception.BizException;
@@ -25,14 +25,14 @@ public class TrafficService {
     }
 
     public IPage<VpsTrafficDetail> my(LocalDate startTime, LocalDate endTime, long page, long size) {
-        LambdaQueryWrapper<VpsTrafficDetail> query = new LambdaQueryWrapper<VpsTrafficDetail>()
-                .eq(VpsTrafficDetail::getUserId, CurrentUser.id())
-                .orderByDesc(VpsTrafficDetail::getCollectTime);
+        QueryWrapper<VpsTrafficDetail> query = new QueryWrapper<VpsTrafficDetail>()
+                .eq("user_id", CurrentUser.id())
+                .orderByDesc("collect_time");
         if (startTime != null) {
-            query.ge(VpsTrafficDetail::getCollectTime, startTime.atStartOfDay());
+            query.ge("collect_time", startTime.atStartOfDay());
         }
         if (endTime != null) {
-            query.le(VpsTrafficDetail::getCollectTime, endTime.plusDays(1).atStartOfDay());
+            query.le("collect_time", endTime.plusDays(1).atStartOfDay());
         }
         return trafficDetailMapper.selectPage(Page.of(page, size), query);
     }
@@ -42,9 +42,9 @@ public class TrafficService {
         if (instance == null || !instance.getUserId().equals(CurrentUser.id())) {
             throw new BizException(404, "VPS 实例不存在");
         }
-        return trafficDetailMapper.selectPage(Page.of(page, size), new LambdaQueryWrapper<VpsTrafficDetail>()
-                .eq(VpsTrafficDetail::getInstanceId, instanceId)
-                .orderByDesc(VpsTrafficDetail::getCollectTime));
+        return trafficDetailMapper.selectPage(Page.of(page, size), new QueryWrapper<VpsTrafficDetail>()
+                .eq("instance_id", instanceId)
+                .orderByDesc("collect_time"));
     }
 
     public Map<String, Object> summary(Long instanceId) {

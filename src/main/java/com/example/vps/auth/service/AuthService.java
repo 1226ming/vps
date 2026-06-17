@@ -1,6 +1,6 @@
 package com.example.vps.auth.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.vps.auth.dto.LoginRequest;
 import com.example.vps.auth.dto.RegisterRequest;
 import com.example.vps.auth.vo.LoginVO;
@@ -32,8 +32,8 @@ public class AuthService {
 
     @Transactional
     public LoginVO register(RegisterRequest request) {
-        SysUser existing = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
-                .eq(SysUser::getUsername, request.username()));
+        SysUser existing = userMapper.selectOne(new QueryWrapper<SysUser>()
+                .eq("username", request.username()));
         if (existing != null) {
             throw new BizException(409, "用户名已存在");
         }
@@ -50,8 +50,8 @@ public class AuthService {
     }
 
     public LoginVO login(LoginRequest request) {
-        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
-                .eq(SysUser::getUsername, request.username()));
+        SysUser user = userMapper.selectOne(new QueryWrapper<SysUser>()
+                .eq("username", request.username()));
         if (user == null || !passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new BadCredentialsException("bad credentials");
         }

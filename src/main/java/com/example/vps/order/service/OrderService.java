@@ -1,6 +1,6 @@
 package com.example.vps.order.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.vps.common.enums.OrderStatus;
@@ -46,9 +46,9 @@ public class OrderService {
     }
 
     public IPage<VpsOrder> myOrders(long page, long size) {
-        return orderMapper.selectPage(Page.of(page, size), new LambdaQueryWrapper<VpsOrder>()
-                .eq(VpsOrder::getUserId, CurrentUser.id())
-                .orderByDesc(VpsOrder::getId));
+        return orderMapper.selectPage(Page.of(page, size), new QueryWrapper<VpsOrder>()
+                .eq("user_id", CurrentUser.id())
+                .orderByDesc("id"));
     }
 
     public VpsOrder myDetail(Long id) {
